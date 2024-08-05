@@ -35,73 +35,68 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen bg-[#2e2e2e] flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor='username-input' className="block text-gray-700">Username</label>
             <input
               id='username-input'
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-200"
-              placeholder="Enter your username"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-black"
+              placeholder="Username"
               required
             />
           </div>
           <div>
-            <label htmlFor='email-input' className="block text-gray-700">Email</label>
             <input
               id='email-input'
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-200"
-              placeholder="Enter your email"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-black"
+              placeholder="Email"
               required
             />
           </div>
           <div>
-            <label htmlFor='password-input' className="block text-gray-700">Password</label>
             <input
               id='password-input'
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-200"
-              placeholder="Enter your password"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-black"
+              placeholder="Password"
               required
             />
           </div>
           <div>
-            <label htmlFor='first-name-input' className="block text-gray-700">First Name</label>
             <input
               id='first-name-input'
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-200"
-              placeholder="Enter your first name"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-black"
+              placeholder="First Name"
               required
             />
           </div>
           <div>
-            <label htmlFor='last-name-input' className="block text-gray-700">Last Name</label>
             <input
               id='last-name-input'
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-200"
-              placeholder="Enter your last name"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-black"
+              placeholder="Last Name"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition duration-300"
+            className="w-full bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-800 transition duration-300"
           >
             Register
           </button>
@@ -109,8 +104,8 @@ const Register = () => {
         <p className="mt-4 text-center">
           Already have an account?{' '}
           <button
-            onClick={() => navigate('/')}
-            className="text-indigo-500 hover:underline focus:outline-none"
+            onClick={() => navigate('/login')}
+            className="text-black font-bold hover:underline focus:outline-none"
           >
             Login
           </button>

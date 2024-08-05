@@ -27,9 +27,9 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+    <div className="min-h-screen bg-[#2e2e2e] flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-left">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor='email-input' className="block text-gray-700">Email</label>
@@ -39,7 +39,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-200"
-              placeholder="Enter your email"
+              placeholder="Email"
               required
             />
           </div>
@@ -51,13 +51,13 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:ring-indigo-200"
-              placeholder="Enter your password"
+              placeholder="Password"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-2 px-4 rounded-lg hover:bg-indigo-600 transition duration-300"
+            className="w-full bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-800 transition duration-300"
           >
             Login
           </button>
@@ -66,7 +66,7 @@ const Login = () => {
           Don't have an account?{' '}
           <button
             onClick={() => navigate('/register')}            
-            className="text-indigo-500 hover:underline focus:outline-none"
+            className="text-black font-bold hover:underline focus:outline-none"
           >
             Register
           </button>
