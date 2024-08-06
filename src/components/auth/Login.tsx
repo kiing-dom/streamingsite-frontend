@@ -19,6 +19,7 @@ const Login = () => {
       });
       console.log(response.data);
       toast.success(response.data);
+      navigate("/home")
      
     } catch (error) {
       console.error(error);
