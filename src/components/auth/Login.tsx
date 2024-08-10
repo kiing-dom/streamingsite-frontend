@@ -17,10 +17,22 @@ const Login = () => {
         email,
         password,
       });
+
+      const {role, userId} = response.data;
+
+      localStorage.setItem('userRole', role);
+      localStorage.setItem('userId', userId.toString())
+
       console.log(response.data);
       toast.success(response.data);
-      navigate("/home")
-     
+
+      if(role === 'ADMIN') {
+        navigate('/admin_dashboard');
+      } else {
+        navigate('/home');
+      }
+
+
     } catch (error) {
       console.error(error);
       toast.error('Invalid Credentials!')
