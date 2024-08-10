@@ -18,13 +18,13 @@ const Login = () => {
         password,
       });
 
-      const {role, userId} = response.data;
+      const {role, userId, message} = response.data;
 
       localStorage.setItem('userRole', role);
       localStorage.setItem('userId', userId.toString())
 
-      console.log(response.data);
-      toast.success(response.data);
+      console.log(message);
+      toast.success(message);
 
       if(role === 'ADMIN') {
         navigate('/admin_dashboard');
