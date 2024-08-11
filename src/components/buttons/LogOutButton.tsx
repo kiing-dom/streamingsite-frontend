@@ -1,14 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useUserStore } from '../../state/userStore';
 
 const LogOutButton: React.FC = () => {
     const navigate = useNavigate();
+    const clearUser = useUserStore(state => state.clearUser);
 
 
-    const handleSignOut = () => {
+    const handleSignOut = async () => {
         localStorage.removeItem('userRole');
         localStorage.removeItem('userId');
+
+        clearUser();
 
         toast.success("Logged Out Successfully");
 
