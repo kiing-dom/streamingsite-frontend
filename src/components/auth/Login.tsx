@@ -1,45 +1,51 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
 import { useNavigate } from 'react-router-dom';
-
-import toast from 'react-hot-toast'
+import toast from 'react-hot-toast';
 import { useUserStore } from '../../state/userStore';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const setCredentials = useUserStore(state => state.setCredentials);
   const fetchUser = useUserStore(state => state.fetchUser);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Perform login
       const response = await axios.post('http://localhost:8080/api/login', {
         email,
         password,
       });
 
-      const {role, userId, message} = response.data;
+      const { role, userId, message } = response.data;
 
+      // Store credentials and user data in Zustand
+      setCredentials(email, password);
+
+      // Store user role and ID in local storage
       localStorage.setItem('userRole', role);
-      localStorage.setItem('userId', userId.toString())
+      localStorage.setItem('userId', userId.toString());
 
+      // Fetch user data
       await fetchUser(userId);
 
+      // Show success message
       console.log(message);
       toast.success(message);
 
-      if(role === 'ADMIN') {
+      // Redirect based on user role
+      if (role === 'ADMIN') {
         navigate('/admin_dashboard');
       } else {
         navigate('/home');
       }
 
-
     } catch (error) {
       console.error(error);
-      toast.error('Invalid Credentials!')
+      toast.error('Invalid Credentials!');
     }
   };
 

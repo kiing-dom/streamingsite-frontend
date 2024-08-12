@@ -9,10 +9,12 @@ const AdminDashboard: React.FC = () => {
 
   if(!user) {
     return (
-      <div>
+      <div className='flex flex-col justify-center items-center h-[84vh]'>
         <CircularProgress
+        className='mb-5'
           color='inherit'
         />
+        <LogOutButton />
       </div>
     )
   }
@@ -20,7 +22,7 @@ const AdminDashboard: React.FC = () => {
   return (
 
 
-    <div className='flex justify-center items-center h-[84vh]'>
+    <div className='flex flex-col justify-center items-center h-[84vh]'>
       Admin Dashboard
       <p className='text-black'>Username: <strong>{user?.username}</strong></p>
       <LogOutButton />
