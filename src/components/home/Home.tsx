@@ -1,7 +1,7 @@
 import React from 'react';
 import LogOutButton from '../buttons/LogOutButton';
 import { useUser } from '../../hooks/useUser';
-import { CircularProgress, Grid, Card, CardContent, CardMedia, Typography } from '@mui/material';
+import { CircularProgress, Grid, Card, CardContent, Typography } from '@mui/material';
 import { PlayArrow } from '@mui/icons-material';
 
 // Mock data for videos
@@ -33,7 +33,7 @@ export default function Home() {
       <header className='p-4 flex justify-between items-center'>
         <h1 className='text-3xl font-bold text-red-600'>Home</h1>
         <div>
-          <span className='mr-4'>Welcome, {user?.username}</span>
+          <span className='mr-4'>Welcome, {user?.firstName}</span>
           <LogOutButton />
         </div>
       </header>
