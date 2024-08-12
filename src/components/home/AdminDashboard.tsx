@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useUser } from '../../hooks/useUser';
 import { CircularProgress, Button, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, CloudUpload } from '@mui/icons-material';
 import LogOutButton from '../buttons/LogOutButton';
+
+interface ContentItem {
+  id: number;
+  title: string;
+  description: string;
+  videoFile: File | null;
+  uploadStatus: 'pending' | 'uploading' | 'completed' | 'error';
+}
 
 const AdminDashboard: React.FC = () => {
   const userId = parseInt(localStorage.getItem('userId') ?? '0');
   const user = useUser(userId);
-  const [newContent, setNewContent] = useState({ title: '', description: '', url: '' });
-  const [contentList, setContentList] = useState<Array<{ id: number; title: string; description: string; url: string }>>([]);
+  const [newContent, setNewContent] = useState<ContentItem>({
+    id: 0,
+    title: '',
+    description: '',
+    videoFile: null,
+    uploadStatus: 'pending'
+  });
+  const [contentList, setContentList] = useState<ContentItem[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!user) {
     return (
@@ -24,11 +39,51 @@ const AdminDashboard: React.FC = () => {
     setNewContent({ ...newContent, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewContent({ ...newContent, videoFile: e.target.files[0] });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newContent.title && newContent.url) {
-      setContentList([...contentList, { id: Date.now(), ...newContent }]);
-      setNewContent({ title: '', description: '', url: '' });
+    if (newContent.title && newContent.videoFile) {
+      const contentItem: ContentItem = {
+        ...newContent,
+        id: Date.now(),
+        uploadStatus: 'uploading'
+      };
+      setContentList([...contentList, contentItem]);
+
+      // Simulating upload process
+      try {
+        // Here you would integrate with your backend API to handle the file upload
+        // For example: await uploadVideoToS3(contentItem.videoFile);
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Simulating upload delay
+
+        setContentList(prevList =>
+          prevList.map(item =>
+            item.id === contentItem.id ? { ...item, uploadStatus: 'completed' } : item
+          )
+        );
+      } catch (error) {
+        setContentList(prevList =>
+          prevList.map(item =>
+            item.id === contentItem.id ? { ...item, uploadStatus: 'error' } : item
+          )
+        );
+      }
+
+      setNewContent({
+        id: 0,
+        title: '',
+        description: '',
+        videoFile: null,
+        uploadStatus: 'pending'
+      });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -61,17 +116,17 @@ const AdminDashboard: React.FC = () => {
           multiline
           rows={3}
         />
-        <TextField
-          fullWidth
-          label="Content URL"
-          name="url"
-          value={newContent.url}
-          onChange={handleInputChange}
-          margin="normal"
+        <input
+          name='Upload'
+          type="file"
+          accept="video/*"
+          onChange={handleFileChange}
+          className="mb-4"
+          ref={fileInputRef}
           required
         />
-        <Button type="submit" variant="contained" color="primary" className='mt-4'>
-          Upload New Content
+        <Button type="submit" variant="contained" color="primary" startIcon={<CloudUpload />} className='mt-4'>
+          Upload New Video
         </Button>
       </form>
 
@@ -82,7 +137,12 @@ const AdminDashboard: React.FC = () => {
             <ListItem key={item.id}>
               <ListItemText
                 primary={item.title}
-                secondary={item.description}
+                secondary={
+                  <>
+                    <div>{item.description}</div>
+                    <div>Status: {item.uploadStatus}</div>
+                  </>
+                }
               />
               <ListItemSecondaryAction>
                 <IconButton edge="end" aria-label="edit">
