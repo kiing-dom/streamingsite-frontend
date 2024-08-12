@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
 import { useNavigate } from 'react-router-dom';
-
-import toast from 'react-hot-toast'
+import toast from 'react-hot-toast';
+import { useUserStore } from '../../state/userStore';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const setCredentials = useUserStore(state => state.setCredentials);
+  const fetchUser = useUserStore(state => state.fetchUser);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,24 +19,27 @@ const Login = () => {
         password,
       });
 
-      const {role, userId, message} = response.data;
+      const { role, userId, message } = response.data;
+
+      setCredentials(email, password);
 
       localStorage.setItem('userRole', role);
-      localStorage.setItem('userId', userId.toString())
+      localStorage.setItem('userId', userId.toString());
+
+      await fetchUser(userId);
 
       console.log(message);
       toast.success(message);
 
-      if(role === 'ADMIN') {
+      if (role === 'ADMIN') {
         navigate('/admin_dashboard');
       } else {
         navigate('/home');
       }
 
-
     } catch (error) {
       console.error(error);
-      toast.error('Invalid Credentials!')
+      toast.error('Invalid Credentials!');
     }
   };
 
