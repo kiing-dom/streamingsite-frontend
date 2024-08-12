@@ -14,7 +14,6 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Perform login
       const response = await axios.post('http://localhost:8080/api/login', {
         email,
         password,
@@ -22,21 +21,16 @@ const Login = () => {
 
       const { role, userId, message } = response.data;
 
-      // Store credentials and user data in Zustand
       setCredentials(email, password);
 
-      // Store user role and ID in local storage
       localStorage.setItem('userRole', role);
       localStorage.setItem('userId', userId.toString());
 
-      // Fetch user data
       await fetchUser(userId);
 
-      // Show success message
       console.log(message);
       toast.success(message);
 
-      // Redirect based on user role
       if (role === 'ADMIN') {
         navigate('/admin_dashboard');
       } else {
