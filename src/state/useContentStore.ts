@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import { useUserStore } from "./userStore";
+import { useState } from "react";
 
 interface Category {
   id: number;
@@ -28,6 +29,7 @@ interface ContentState {
   videoFile: File | null;
   thumbnailFile: File | null;
   categories: Category[];
+  isFetchingContent: boolean;
   fetchContent: () => Promise<void>;
   fetchCategories: () => Promise<void>;
   setNewContent: (content: Partial<ContentItem>) => void;
@@ -39,6 +41,7 @@ interface ContentState {
 }
 
 export const useContentStore = create<ContentState>((set, get) => ({
+  
   contentList: [],
   newContent: {
     id: 0,
@@ -55,7 +58,10 @@ export const useContentStore = create<ContentState>((set, get) => ({
   thumbnailFile: null,
   categories: [],
 
+  isFetchingContent: false,
+
   fetchContent: async () => {
+    set({isFetchingContent: true});
     const { username, password } = useUserStore.getState();
     const encodedCredentials = btoa(`${username}:${password}`);
 
@@ -65,10 +71,14 @@ export const useContentStore = create<ContentState>((set, get) => ({
           Authorization: `Basic ${encodedCredentials}`,
         },
       });
-      set({ contentList: response.data });
+      const contentData = response.data;
+      set({ contentList: response.data, isFetchingContent: false });
       console.log(response.data);
+      return contentData;
     } catch (error) {
       console.error("Error fetching content", error);
+      set({isFetchingContent: false});
+      return [];
     }
   },
 

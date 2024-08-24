@@ -11,7 +11,7 @@ const AdminDashboard: React.FC = () => {
   const userId = parseInt(localStorage.getItem('userId') ?? '0');
   const user = useUser(userId);
 
-  const [isContentLoading, setIsContentLoading] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   const {
     contentList,
@@ -22,6 +22,7 @@ const AdminDashboard: React.FC = () => {
     setVideoFile,
     setThumbnailFile,
     fetchContent,
+    isFetchingContent,
     fetchCategories,
     categories,
     handleSubmit,
@@ -29,8 +30,14 @@ const AdminDashboard: React.FC = () => {
   } = useContentStore();
 
   useEffect(() => {
-    fetchContent();
-    fetchCategories(); // Fetch categories on component mount
+    const loadContent = async() => {
+      setIsContentReady(false);
+      const content = await fetchContent();
+      setIsContentReady(Array.isArray(content) && content.length > 0);
+    }
+
+    loadContent();
+    fetchCategories();
   }, [fetchContent, fetchCategories]);
 
   const handleVideoDrop = (acceptedFiles: File[]) => {
@@ -87,11 +94,10 @@ const AdminDashboard: React.FC = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleSubmit();
-    setIsContentLoading(true);
-
-    await fetchContent();
-    setIsContentLoading(false);
+    setIsContentReady(false);
+    await handleSubmit();
+    const newContent = await fetchContent();
+    setIsContentReady(Array.isArray(newContent) && newContent.length > 0);
   }
 
 
@@ -299,7 +305,7 @@ const AdminDashboard: React.FC = () => {
                 ))}
               </List>
 
-              {isContentLoading && (
+              {(!isContentReady || isFetchingContent) && (
                 <div className='flex flex-col justify-center items-center'>
                 <CircularProgress className='mb-5' color='inherit'  />
               </div>
