@@ -4,7 +4,7 @@ import { useUser } from '../../hooks/useUser';
 import { CircularProgress, Grid, Card, CardContent, Typography, Modal, Box, IconButton } from '@mui/material';
 import { PlayArrow, Close } from '@mui/icons-material';
 import { useContentStore } from '../../state/useContentStore';
-import VideoPlayer from '../video/VideoPlayer'; // Import your VideoPlayer component
+import VideoPlayer from '../video/VideoPlayer';
 
 export default function Home() {
     const userId = parseInt(localStorage.getItem('userId') ?? '0', 10);
