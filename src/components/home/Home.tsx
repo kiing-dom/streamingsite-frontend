@@ -81,7 +81,8 @@ export default function Home() {
                                     }}
                                 >
                                     <Typography variant="h6">{video.title}</Typography>
-                                    <Typography color="gray" variant="caption">{video.description}</Typography>
+                                    <Typography color="gray" variant="caption" display="block">{video.description}</Typography>
+                                    <Typography color="orange" variant="caption" display="block">{video.tags.join(", ")}</Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
