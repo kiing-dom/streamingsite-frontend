@@ -32,9 +32,9 @@ const Login = () => {
       toast.success(message);
 
       if (role === 'ADMIN') {
-        navigate('/admin_dashboard');
+        navigate('/admin_dashboard', { replace: true});
       } else {
-        navigate('/home');
+        navigate('/home', { replace: true });
       }
 
     } catch (error) {
