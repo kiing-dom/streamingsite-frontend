@@ -16,7 +16,7 @@ export default function Home() {
 
     if (!user) {
         return (
-            <div className='flex flex-col justify-center items-center h-screen bg-black'>
+            <div className='flex flex-col justify-center items-center h-screen bg-neutral-800'>
                 <CircularProgress className='mb-5' color='inherit' />
                 <LogOutButton />
             </div>
@@ -24,7 +24,7 @@ export default function Home() {
     }
 
     return (
-        <div className='min-h-screen bg-black text-white'>
+        <div className='min-h-screen bg-neutral-900 text-white'>
             <header className='p-4 flex justify-between items-center'>
                 <h1 className='text-3xl font-bold text-red-600'>Home</h1>
                 <div>
@@ -81,6 +81,7 @@ export default function Home() {
                                     }}
                                 >
                                     <Typography variant="h6">{video.title}</Typography>
+                                    <Typography color="gray" variant="caption">{video.description}</Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
