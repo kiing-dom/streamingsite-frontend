@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from 'react';
+import React, { useEffect } from 'react';
 import { useUser } from '../../hooks/useUser';
 import { CircularProgress, Button, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Select, SelectChangeEvent, MenuItem, FormControl, InputLabel, Typography, Box, Container, Grid, Paper } from '@mui/material';
 import { Delete, Edit, CloudUpload, Person, AccessTime, Category, Movie, Speed, ImageOutlined } from '@mui/icons-material';
@@ -20,14 +20,16 @@ const AdminDashboard: React.FC = () => {
     setVideoFile,
     setThumbnailFile,
     fetchContent,
+    fetchCategories,
+    categories,
     handleSubmit,
     handleDelete,
-    resetForm
   } = useContentStore();
 
   useEffect(() => {
     fetchContent();
-  }, [fetchContent]);
+    fetchCategories(); // Fetch categories on component mount
+  }, [fetchContent, fetchCategories]);
 
   const handleVideoDrop = (acceptedFiles: File[]) => {
     setVideoFile(acceptedFiles[0]);
@@ -53,7 +55,6 @@ const AdminDashboard: React.FC = () => {
     maxFiles: 1
   });
 
-
   if (!user) {
     return (
       <div className='flex flex-col justify-center items-center h-[84vh]'>
@@ -68,11 +69,25 @@ const AdminDashboard: React.FC = () => {
     setNewContent({ ...newContent, [name]: value });
   };
 
-  const handleSelectChange = (e: SelectChangeEvent<"BEGINNER" | "INTERMEDIATE" | "ADVANCED">) => {
-    const name = e.target.name as keyof typeof newContent;
-    setNewContent({ ...newContent, [name]: e.target.value });
+  const handleSelectChange = (e: SelectChangeEvent<string>) => {
+    const { name, value } = e.target;
+    setNewContent({ ...newContent, [name]: value });
   };
 
+  const handleCategoryChange = (e: SelectChangeEvent<number>) => {
+    const selectedCategoryId = e.target.value as number;
+    const selectedCategory = categories.find(cat => cat.id === selectedCategoryId);
+
+    if (selectedCategory) {
+      setNewContent({ category: selectedCategory });
+    }
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit();
+  }
+  
 
   return (
     <Box sx={{ bgcolor: '#141414', minHeight: '100vh', py: 4 }}>
@@ -88,7 +103,7 @@ const AdminDashboard: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Paper elevation={3} sx={{ p: 3, bgcolor: '#222', color: '#fff' }}>
               <Typography variant="h5" sx={{ mb: 3 }}>Add New Content</Typography>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleFormSubmit}>
                 <TextField
                   fullWidth
                   label="Content Title"
@@ -152,6 +167,23 @@ const AdminDashboard: React.FC = () => {
                     <MenuItem value="ADVANCED">Advanced</MenuItem>
                   </Select>
                 </FormControl>
+                <FormControl fullWidth margin="normal" variant="filled" sx={{ mb: 2 }}>
+                  <InputLabel sx={{ color: '#aaa' }}>Category</InputLabel>
+                  <Select
+                    name="category"
+                    value={newContent.category?.id || ''}
+                    onChange={handleCategoryChange}
+                    displayEmpty
+                    sx={{ color: '#fff' }}
+                  >
+                    <MenuItem value="" disabled>Select a category</MenuItem>
+                    {categories.map((category) => (
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TagInput
                   tags={newContent.tags}
                   setTags={(newTags) => setNewContent({ ...newContent, tags: newTags })}
@@ -207,6 +239,7 @@ const AdminDashboard: React.FC = () => {
                   type="submit"
                   variant="contained"
                   startIcon={<CloudUpload />}
+                  onClick={handleSubmit}
                   sx={{
                     mt: 2,
                     bgcolor: '#E50914',
