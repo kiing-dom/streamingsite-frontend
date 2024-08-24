@@ -34,7 +34,7 @@ const Login = () => {
       if (role === 'ADMIN') {
         navigate('/admin_dashboard', { replace: true});
       } else {
-        navigate('/home');
+        navigate('/home', { replace: true });
       }
 
     } catch (error) {
