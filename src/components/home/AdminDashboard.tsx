@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useUser } from '../../hooks/useUser';
 import { CircularProgress, Button, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Select, SelectChangeEvent, MenuItem, FormControl, InputLabel, Typography, Box, Container, Grid, Paper } from '@mui/material';
 import { Delete, Edit, CloudUpload, Person, AccessTime, Category, Movie, Speed, ImageOutlined } from '@mui/icons-material';
@@ -10,6 +10,8 @@ import TagInput from '../ui/TagInput';
 const AdminDashboard: React.FC = () => {
   const userId = parseInt(localStorage.getItem('userId') ?? '0');
   const user = useUser(userId);
+
+  const [isContentLoading, setIsContentLoading] = useState(false);
 
   const {
     contentList,
@@ -83,11 +85,15 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     handleSubmit();
+    setIsContentLoading(true);
+
+    await fetchContent();
+    setIsContentLoading(false);
   }
-  
+
 
   return (
     <Box sx={{ bgcolor: '#141414', minHeight: '100vh', py: 4 }}>
@@ -239,7 +245,6 @@ const AdminDashboard: React.FC = () => {
                   type="submit"
                   variant="contained"
                   startIcon={<CloudUpload />}
-                  onClick={handleSubmit}
                   sx={{
                     mt: 2,
                     bgcolor: '#E50914',
@@ -293,6 +298,13 @@ const AdminDashboard: React.FC = () => {
                   </ListItem>
                 ))}
               </List>
+
+              {isContentLoading && (
+                <div className='flex flex-col justify-center items-center'>
+                <CircularProgress className='mb-5' color='inherit'  />
+              </div>
+              )}
+
             </Paper>
           </Grid>
         </Grid>
