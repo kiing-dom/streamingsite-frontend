@@ -1,18 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import LogOutButton from '../buttons/LogOutButton';
 import { useUser } from '../../hooks/useUser';
-import { CircularProgress, Grid, Card, CardContent, Typography } from '@mui/material';
-import { PlayArrow } from '@mui/icons-material';
+import { CircularProgress, Grid, Card, CardContent, Typography, Modal, Box, IconButton } from '@mui/material';
+import { PlayArrow, Close } from '@mui/icons-material';
 import { useContentStore } from '../../state/useContentStore';
+import VideoPlayer from '../video/VideoPlayer'; // Import your VideoPlayer component
 
 export default function Home() {
     const userId = parseInt(localStorage.getItem('userId') ?? '0', 10);
     const user = useUser(userId);
     const { contentList, fetchContent } = useContentStore();
+    const [open, setOpen] = useState(false);
+    const [selectedVideoUrl, setSelectedVideoUrl] = useState<string | null>(null);
 
     useEffect(() => {
         fetchContent();
     }, [fetchContent]);
+
+    const handleOpen = (videoUrl: string) => {
+        setSelectedVideoUrl(videoUrl);
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setSelectedVideoUrl(null);
+    };
 
     if (!user) {
         return (
@@ -47,6 +60,7 @@ export default function Home() {
                                     position: 'relative',
                                     overflow: 'hidden',
                                     transition: '0.3s',
+                                    cursor: 'pointer',
                                     '&:hover': {
                                         transform: 'scale(1.05)',
                                         '& .MuiCardContent-root': {
@@ -54,6 +68,7 @@ export default function Home() {
                                         },
                                     },
                                 }}
+                                onClick={() => handleOpen(video.videoUrl ?? "")}
                             >
                                 <div
                                     style={{
@@ -88,6 +103,24 @@ export default function Home() {
                         </Grid>
                     ))}
                 </Grid>
+
+                <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="video-player-modal"
+                    aria-describedby="modal-to-play-video"
+                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                    <Box sx={{ position: 'relative', width: '80%', maxWidth: 800, outline: 0 }}>
+                        <IconButton
+                            sx={{ position: 'absolute', top: -10, right: -10, color: 'white', zIndex: 1 }}
+                            onClick={handleClose}
+                        >
+                            <Close />
+                        </IconButton>
+                        {selectedVideoUrl && <VideoPlayer videoUrl={selectedVideoUrl} />}
+                    </Box>
+                </Modal>
             </main>
         </div>
     );
